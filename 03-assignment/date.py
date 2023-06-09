@@ -1,5 +1,4 @@
-from typing import List, Any
-
+from typing import List
 
 helpers = ["the", "of"]
 
@@ -62,6 +61,9 @@ numbers = [
     ["thousand", 1000],
 ]
 
+# -----------------
+# Num to word part
+# -----------------
 
 def numberToWord(num: int) -> str:
     # find the number in numbers, generate if not found
@@ -137,18 +139,18 @@ def monthToNum(word: str):
     return "ERR"
 
 
-def ordinalWordToNum(word: str) -> Any:
+def ordinalWordToNum(word: str):
     for i in range(len(ordinals)):
         if ordinals[i][0] == word:
             return ordinals[i][1]
-    word = word[:-2]  # removing "th" suffix
+    word = word.removesuffix("th")
     for i in range(len(numbers)):
         if word == numbers[i][0]:
             return numbers[i][1]
     return None
 
 
-def wordToNum(word: str) -> Any:
+def wordToNum(word: str):
     for i in range(len(numbers)):
         if word == numbers[i][0]:
             return numbers[i][1]
@@ -176,8 +178,8 @@ def indexOfLastWord(word: str):
 
 def yearToNum(word: str):
     # checking from end, removing words found in numbers array and summing them up
-    out = 0
-    index = indexOfLastWord(word)
+    out:int = 0
+    index:int = indexOfLastWord(word)
     while index != None:
         firstWord = word[index:]
         num = wordToNum(firstWord)
@@ -204,7 +206,7 @@ def yearToNum(word: str):
     return out
 
 
-def convertWordToDate(word: str):
+def convertWordToDate(word: str) -> str:
     word = word.replace("the ", "")
     word = word.replace("of ", "")
     wordArr: List[str] = list(map(str, word.split(" ")))
@@ -213,7 +215,9 @@ def convertWordToDate(word: str):
     return f"{dayNum}.{monthNum}.{yearToNum(wordArr[2])}"
 
 
-# validation
+# -----------------
+# Validation
+# -----------------
 
 
 def isInNumFormat(inp: str) -> bool:
@@ -307,12 +311,12 @@ def wordDateIsValid(s: str) -> bool:
 
 
 def convertBidirectional(s: str) -> str:
-    if isInNumFormat(s):  # formatted like "the tenth of October fivehundrednine"
+    if isInNumFormat(s):  # eg. "15.10.191"
         if not numDateIsValid(s):
             return "ERROR"
         else:
             return convertDateToWord(s)
-    else:  # formatted like "15.10.191"
+    else:  # eg. "the fifteenth of October onehundredninetyone"
         num: str = ""
         try:
             num = convertWordToDate(s)
@@ -327,6 +331,5 @@ def convertBidirectional(s: str) -> str:
 
 
 if __name__ == "__main__":
-    # dateString = "the thirty-first of December one"
     dateString = input()
     print(convertBidirectional(dateString))
